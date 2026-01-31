@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 
 const APP_STORE_URL = 'https://apps.apple.com/app/rally/idAPP_STORE_ID'
 
-export default function ShareRedirect() {
+export default function CatchAll() {
   useEffect(() => {
     window.location.href = APP_STORE_URL
   }, [])
