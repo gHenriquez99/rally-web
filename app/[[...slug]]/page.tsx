@@ -19,7 +19,7 @@ export default function CatchAll() {
       fontFamily: 'system-ui, -apple-system, sans-serif',
     }}>
       <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>
-        Redirecting to Rally...
+        ➡️ Redirecting to Rally...
       </h1>
       <p style={{ color: '#666' }}>
         If you&apos;re not redirected automatically,{' '}
