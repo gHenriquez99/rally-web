@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rally Web
 
-## Getting Started
+Next.js web app for Rally marketing pages and deep-link fallbacks.
 
-First, run the development server:
+## Local development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Universal Links setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This repo serves Apple App Site Association (AASA) JSON at:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `https://rallyapp.app/.well-known/apple-app-site-association`
+- `https://rallyapp.app/apple-app-site-association`
 
-## Learn More
+### Required environment variables
 
-To learn more about Next.js, take a look at the following resources:
+Set these in your deployment environment (and optionally in `.env.local` for local checks):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+APPLE_TEAM_ID=YOUR_TEAM_ID
+NEXT_PUBLIC_APP_STORE_ID=0000000000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `APPLE_TEAM_ID`: your 10-character Apple Team ID from Apple Developer.
+- `NEXT_PUBLIC_APP_STORE_ID`: numeric App Store ID for the Rally iOS app.
 
-## Deploy on Vercel
+### Universal Link contract
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Claimed domain: `rallyapp.app`
+- iOS bundle ID: `com.rallyapp.app`
+- Claimed paths: `/e/*`
+- Derived AASA `appID`: `${APPLE_TEAM_ID}.com.rallyapp.app`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Verify AASA responses
+
+Run these checks after deploy:
+
+```bash
+curl -i https://rallyapp.app/.well-known/apple-app-site-association
+curl -i https://rallyapp.app/apple-app-site-association
+```
+
+Expected:
+
+- HTTP `200 OK`
+- `Content-Type: application/json` (charset is fine)
+- no redirect
+- valid JSON payload with expected `appID` and `paths`
+
+## iOS app-side configuration (outside this repo)
+
+In your iOS app target:
+
+1. Enable `Associated Domains` capability.
+2. Add `applinks:rallyapp.app` in entitlements.
+3. Ensure signing Team ID + bundle ID match AASA `appID`.
+4. Reinstall the app after AASA changes (TestFlight/App Store or uninstall/reinstall).
