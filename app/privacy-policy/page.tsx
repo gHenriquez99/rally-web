@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 /* eslint-disable react/no-unescaped-entities */
 
 export const metadata: Metadata = {
@@ -22,12 +23,9 @@ export default function PrivacyPolicy() {
       </p>
       <p className="mb-10">
         Contact:{" "}
-        <a
-          href="mailto:henriquez.gus99@gmail.com"
-          className="underline hover:opacity-80"
-        >
-          henriquez.gus99@gmail.com
-        </a>
+        <Link href="/support" className="underline hover:opacity-80">
+          rallyapp.app/support
+        </Link>
       </p>
 
       <section className="space-y-4 mb-10">
@@ -230,13 +228,10 @@ export default function PrivacyPolicy() {
             Using the in-app delete option: Profile -&gt; Delete Account, or
           </li>
           <li>
-            Emailing us at{" "}
-            <a
-              href="mailto:henriquez.gus99@gmail.com"
-              className="underline hover:opacity-80"
-            >
-              henriquez.gus99@gmail.com
-            </a>
+            Contacting us via{" "}
+            <Link href="/support" className="underline hover:opacity-80">
+              rallyapp.app/support
+            </Link>
             .
           </li>
         </ul>
@@ -284,12 +279,9 @@ export default function PrivacyPolicy() {
           </p>
           <p>
             To exercise rights, contact:{" "}
-            <a
-              href="mailto:henriquez.gus99@gmail.com"
-              className="underline hover:opacity-80"
-            >
-              henriquez.gus99@gmail.com
-            </a>
+            <Link href="/support" className="underline hover:opacity-80">
+              rallyapp.app/support
+            </Link>
             .
           </p>
         </div>
@@ -339,12 +331,9 @@ export default function PrivacyPolicy() {
         <h2 className="text-2xl font-semibold">13. Contact</h2>
         <p>For privacy requests or questions, contact:</p>
         <p>
-          <a
-            href="mailto:henriquez.gus99@gmail.com"
-            className="underline hover:opacity-80"
-          >
-            henriquez.gus99@gmail.com
-          </a>
+          <Link href="/support" className="underline hover:opacity-80">
+            rallyapp.app/support
+          </Link>
         </p>
       </section>
     </main>

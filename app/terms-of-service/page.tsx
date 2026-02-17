@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 /* eslint-disable react/no-unescaped-entities */
 
 export const metadata: Metadata = {
@@ -23,12 +24,9 @@ export default function TermsOfService() {
       </p>
       <p className="mb-10">
         Contact:{" "}
-        <a
-          href="mailto:henriquez.gus99@gmail.com"
-          className="underline hover:opacity-80"
-        >
-          henriquez.gus99@gmail.com
-        </a>
+        <Link href="/support" className="underline hover:opacity-80">
+          rallyapp.app/support
+        </Link>
       </p>
 
       <section className="space-y-4 mb-10">
@@ -57,13 +55,10 @@ export default function TermsOfService() {
           <li>All activity that occurs under your account.</li>
         </ul>
         <p>
-          You must promptly notify us at{" "}
-          <a
-            href="mailto:henriquez.gus99@gmail.com"
-            className="underline hover:opacity-80"
-          >
-            henriquez.gus99@gmail.com
-          </a>{" "}
+          You must promptly notify us via{" "}
+          <Link href="/support" className="underline hover:opacity-80">
+            rallyapp.app/support
+          </Link>{" "}
           if you suspect unauthorized account access.
         </p>
       </section>
@@ -340,12 +335,9 @@ export default function TermsOfService() {
         <h2 className="text-2xl font-semibold">17. Contact</h2>
         <p>Questions or legal notices:</p>
         <p>
-          <a
-            href="mailto:henriquez.gus99@gmail.com"
-            className="underline hover:opacity-80"
-          >
-            henriquez.gus99@gmail.com
-          </a>
+          <Link href="/support" className="underline hover:opacity-80">
+            rallyapp.app/support
+          </Link>
         </p>
       </section>
     </main>
