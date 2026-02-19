@@ -19,6 +19,52 @@ const OG_IMAGE_HEADERS = {
   "Cache-Control": "public, s-maxage=300, stale-while-revalidate=86400",
 };
 
+const PALETTE = {
+  background: "hsl(0 0% 12.9%)",
+  foreground: "hsl(0 0% 98%)",
+  card: "hsl(0 0% 18.8%)",
+  cardForeground: "hsl(0 0% 98%)",
+  primary: "hsl(210 95% 72%)",
+  primaryForeground: "hsl(210 20% 12%)",
+} as const;
+
+function normalizeText(text: string): string {
+  return text.replace(/\s+/g, " ").trim();
+}
+
+function truncateAtWordBoundary(text: string, maxChars: number): string {
+  const normalized = normalizeText(text);
+  if (normalized.length <= maxChars) {
+    return normalized;
+  }
+
+  const truncated = normalized.slice(0, maxChars + 1);
+  const lastSpaceIndex = truncated.lastIndexOf(" ");
+  const cutoffIndex = lastSpaceIndex > maxChars * 0.6 ? lastSpaceIndex : maxChars;
+
+  return `${truncated.slice(0, cutoffIndex).trimEnd()}...`;
+}
+
+function getTitleFontSize(nameLength: number): number {
+  if (nameLength > 58) {
+    return 52;
+  }
+
+  if (nameLength > 38) {
+    return 62;
+  }
+
+  return 72;
+}
+
+function getSecondaryLine(formattedDate: string, venueName: string | null): string {
+  if (!venueName) {
+    return normalizeText(formattedDate);
+  }
+
+  return normalizeText(`${formattedDate} | ${venueName}`);
+}
+
 function getShell(content: React.ReactNode) {
   return (
     <div
@@ -26,11 +72,10 @@ function getShell(content: React.ReactNode) {
         display: "flex",
         width: "100%",
         height: "100%",
-        background:
-          "radial-gradient(circle at 15% 15%, #164e63 0%, #082f49 38%, #0f172a 100%)",
-        color: "#e2e8f0",
+        background: `radial-gradient(circle at 12% 8%, hsl(210 95% 72% / 0.2) 0%, ${PALETTE.background} 43%, ${PALETTE.background} 100%)`,
+        color: PALETTE.foreground,
         fontFamily: "ui-sans-serif, system-ui, sans-serif",
-        padding: "56px",
+        padding: "44px",
       }}
     >
       <div
@@ -38,13 +83,13 @@ function getShell(content: React.ReactNode) {
           display: "flex",
           width: "100%",
           height: "100%",
-          borderRadius: "28px",
-          border: "1px solid rgba(148, 163, 184, 0.25)",
-          background:
-            "linear-gradient(155deg, rgba(14, 116, 144, 0.28) 0%, rgba(15, 23, 42, 0.75) 74%)",
-          padding: "48px",
+          borderRadius: "32px",
+          border: "1px solid hsl(210 95% 72% / 0.22)",
+          background: `linear-gradient(160deg, hsl(0 0% 18.8% / 0.97) 0%, hsl(0 0% 18.8% / 0.88) 100%)`,
+          padding: "46px",
           flexDirection: "column",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
+          boxShadow: "0 14px 40px hsl(0 0% 0% / 0.38)",
         }}
       >
         {content}
@@ -62,90 +107,86 @@ function getAvailableImage({
   formattedDate: string;
   venueName: string | null;
 }) {
+  const title = truncateAtWordBoundary(eventName, 76);
+  const titleFontSize = getTitleFontSize(title.length);
+  const secondaryLine = truncateAtWordBoundary(
+    getSecondaryLine(formattedDate, venueName),
+    92,
+  );
+
   return getShell(
     <>
       <div
         style={{
           display: "flex",
           alignSelf: "flex-start",
-          padding: "10px 18px",
+          padding: "11px 18px",
           borderRadius: "999px",
-          border: "1px solid rgba(125, 211, 252, 0.38)",
-          fontSize: "20px",
-          letterSpacing: "0.12em",
+          background: PALETTE.primary,
+          color: PALETTE.primaryForeground,
+          fontSize: "18px",
+          letterSpacing: "0.1em",
+          fontWeight: 700,
           textTransform: "uppercase",
-          color: "#bae6fd",
         }}
       >
         Rally Invite
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          flex: 1,
+          marginTop: "24px",
+          gap: "18px",
+        }}
+      >
         <div
           style={{
-            fontSize: "76px",
-            lineHeight: 1.08,
+            fontSize: `${titleFontSize}px`,
+            lineHeight: 1.05,
             fontWeight: 700,
-            color: "#f8fafc",
-            maxHeight: "170px",
+            letterSpacing: "-0.02em",
+            color: PALETTE.cardForeground,
+            maxWidth: "1040px",
+            maxHeight: "236px",
             overflow: "hidden",
           }}
         >
-          {eventName}
+          {title}
         </div>
 
-        {venueName ? (
-          <div
-            style={{
-              display: "flex",
-              gap: "18px",
-              fontSize: "32px",
-              lineHeight: 1.25,
-              color: "#dbeafe",
-              flexWrap: "wrap",
-            }}
-          >
-            <span>{formattedDate}</span>
-            <span style={{ color: "#7dd3fc" }}>|</span>
-            <span>{venueName}</span>
-          </div>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              fontSize: "32px",
-              lineHeight: 1.25,
-              color: "#dbeafe",
-              flexWrap: "wrap",
-            }}
-          >
-            <span>{formattedDate}</span>
-          </div>
-        )}
+        <div
+          style={{
+            display: "flex",
+            fontSize: "34px",
+            lineHeight: 1.2,
+            color: PALETTE.primary,
+            maxWidth: "980px",
+            overflow: "hidden",
+          }}
+        >
+          {secondaryLine}
+        </div>
       </div>
 
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           alignItems: "center",
+          borderTop: "1px solid hsl(210 95% 72% / 0.2)",
+          paddingTop: "18px",
         }}
       >
         <div
           style={{
             display: "flex",
-            fontSize: "26px",
-            color: "#cbd5e1",
-          }}
-        >
-          Join this event on Rally
-        </div>
-        <div
-          style={{
-            display: "flex",
-            fontSize: "34px",
+            fontSize: "30px",
             fontWeight: 700,
-            color: "#f8fafc",
+            color: PALETTE.cardForeground,
             letterSpacing: "0.02em",
           }}
         >
