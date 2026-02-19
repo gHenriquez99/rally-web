@@ -72,19 +72,35 @@ Invite pages now render dynamic metadata and a dynamic OG image for iMessage/soc
 Replace `<token>` with a real invite share token:
 
 ```bash
-curl -s https://rallyapp.app/e/<token> | rg -n "og:|twitter:|Invite unavailable"
+curl -s https://rallyapp.app/e/<token> | rg -n "og:|twitter:"
 curl -i https://rallyapp.app/e/<token>/og
 ```
 
 Check:
 
 - Valid token: metadata includes event name + date + venue, and image points to `/e/<token>/og`.
-- Invalid/expired/deleted token: fallback `Invite unavailable` metadata and fallback OG image content.
+- Invalid/expired/deleted token: fallback generic Rally metadata and `/og.png` image.
 - Response headers include crawler caching:
   - `Cache-Control: public, s-maxage=300, stale-while-revalidate=86400`
 - Invite page is not indexable:
   - metadata robots `noindex,nofollow`
   - `X-Robots-Tag: noindex, nofollow`
+
+### Debug invite preview fallback
+
+Use these commands to inspect debug headers:
+
+```bash
+curl -i https://rallyapp.app/e/<token>
+curl -i https://rallyapp.app/e/<token>/og
+```
+
+Header meanings:
+
+- `x-rally-preview-state: available`: custom event OG should render.
+- `x-rally-preview-state: unavailable` with `x-rally-preview-reason: rpc_error`: Supabase call failed in server runtime.
+- `x-rally-preview-state: unavailable` with `x-rally-preview-reason: missing|deleted|expired|invalid`: token/data lifecycle issue.
+- `x-rally-supabase-host`: host parsed from `SUPABASE_URL` in runtime env for quick environment verification.
 
 ### Verify in iMessage
 
