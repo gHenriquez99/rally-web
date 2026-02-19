@@ -74,7 +74,7 @@ function getShell(content: React.ReactNode) {
         height: "100%",
         background: `radial-gradient(circle at 12% 8%, hsl(210 95% 72% / 0.2) 0%, ${PALETTE.background} 43%, ${PALETTE.background} 100%)`,
         color: PALETTE.foreground,
-        fontFamily: "ui-sans-serif, system-ui, sans-serif",
+        fontFamily: "Arial, Helvetica, sans-serif",
         padding: "44px",
       }}
     >
@@ -139,7 +139,6 @@ function getAvailableImage({
           flexDirection: "column",
           justifyContent: "center",
           flex: 1,
-          marginTop: "24px",
           gap: "18px",
         }}
       >
@@ -169,28 +168,6 @@ function getAvailableImage({
           }}
         >
           {secondaryLine}
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          borderTop: "1px solid hsl(210 95% 72% / 0.2)",
-          paddingTop: "18px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            fontSize: "30px",
-            fontWeight: 700,
-            color: PALETTE.cardForeground,
-            letterSpacing: "0.02em",
-          }}
-        >
-          Rally
         </div>
       </div>
     </>,
