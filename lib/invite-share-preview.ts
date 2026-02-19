@@ -1,9 +1,5 @@
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import {
-  INVITE_PREVIEW_REASON_HEADER,
-  INVITE_PREVIEW_STATE_HEADER,
-} from "@/lib/invite-preview-debug";
-import {
   DEFAULT_OG_IMAGE_PATH,
   SITE_DESCRIPTION,
   SITE_TITLE,
@@ -55,21 +51,6 @@ export function getInviteFallbackMetadata() {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     imagePath: DEFAULT_OG_IMAGE_PATH,
-  };
-}
-
-export function getInvitePreviewDebugHeaders(
-  preview: InviteSharePreview,
-): Record<string, string> {
-  if (preview.state === "available") {
-    return {
-      [INVITE_PREVIEW_STATE_HEADER]: preview.state,
-    };
-  }
-
-  return {
-    [INVITE_PREVIEW_STATE_HEADER]: preview.state,
-    [INVITE_PREVIEW_REASON_HEADER]: preview.reason,
   };
 }
 

@@ -5,9 +5,9 @@ import { useEffect } from "react";
 import { APP_STORE_URL } from "@/lib/app-store";
 
 export default function CatchAll() {
-  // useEffect(() => {
-  //   window.location.href = APP_STORE_URL;
-  // }, []);
+  useEffect(() => {
+    window.location.href = APP_STORE_URL;
+  }, []);
 
   return (
     <div

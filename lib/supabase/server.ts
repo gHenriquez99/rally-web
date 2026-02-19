@@ -32,17 +32,3 @@ export function getSupabaseServerClient(): SupabaseClient {
 
   return supabaseClient;
 }
-
-export function getSupabaseHostForDebug(): string | null {
-  const supabaseUrl = process.env.SUPABASE_URL;
-
-  if (!supabaseUrl) {
-    return null;
-  }
-
-  try {
-    return new URL(supabaseUrl).host;
-  } catch {
-    return null;
-  }
-}

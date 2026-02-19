@@ -3,13 +3,9 @@ import { ImageResponse } from "next/og";
 
 import {
   fetchEventSharePreview,
-  getInvitePreviewDebugHeaders,
-  type InviteSharePreview,
   resolveTimeZoneFromHeaders,
 } from "@/lib/invite-share-preview";
-import { SUPABASE_HOST_HEADER } from "@/lib/invite-preview-debug";
 import { DEFAULT_OG_IMAGE_PATH } from "@/lib/site-metadata";
-import { getSupabaseHostForDebug } from "@/lib/supabase/server";
 
 export const runtime = "edge";
 
@@ -22,27 +18,6 @@ type InviteOgRouteContext = {
 const OG_IMAGE_HEADERS = {
   "Cache-Control": "public, s-maxage=300, stale-while-revalidate=86400",
 };
-
-function getDebugHeaders(preview: InviteSharePreview): Record<string, string> {
-  const headers = getInvitePreviewDebugHeaders(preview);
-  const supabaseHost = getSupabaseHostForDebug();
-
-  if (!supabaseHost) {
-    return headers;
-  }
-
-  return {
-    ...headers,
-    [SUPABASE_HOST_HEADER]: supabaseHost,
-  };
-}
-
-function getResponseHeaders(preview: InviteSharePreview): Record<string, string> {
-  return {
-    ...OG_IMAGE_HEADERS,
-    ...getDebugHeaders(preview),
-  };
-}
 
 function getShell(content: React.ReactNode) {
   return (
@@ -181,36 +156,15 @@ function getAvailableImage({
   );
 }
 
-function redirectToDefaultOgImage(
-  request: NextRequest,
-  preview: InviteSharePreview,
-): Response {
+function redirectToDefaultOgImage(request: NextRequest): Response {
   const fallbackImageUrl = new URL(DEFAULT_OG_IMAGE_PATH, request.url).toString();
 
   return new Response(null, {
     status: 307,
     headers: {
-      ...getResponseHeaders(preview),
+      ...OG_IMAGE_HEADERS,
       Location: fallbackImageUrl,
     },
-  });
-}
-
-export async function HEAD(
-  request: NextRequest,
-  { params }: InviteOgRouteContext,
-) {
-  const { token } = await params;
-  const timeZone = resolveTimeZoneFromHeaders(request.headers);
-  const preview = await fetchEventSharePreview(token, { timeZone });
-
-  if (preview.state === "unavailable") {
-    return redirectToDefaultOgImage(request, preview);
-  }
-
-  return new Response(null, {
-    status: 200,
-    headers: getResponseHeaders(preview),
   });
 }
 
@@ -223,7 +177,7 @@ export async function GET(
   const preview = await fetchEventSharePreview(token, { timeZone });
 
   if (preview.state === "unavailable") {
-    return redirectToDefaultOgImage(request, preview);
+    return redirectToDefaultOgImage(request);
   }
 
   return new ImageResponse(
@@ -235,7 +189,7 @@ export async function GET(
     {
       width: 1200,
       height: 630,
-      headers: getResponseHeaders(preview),
+      headers: OG_IMAGE_HEADERS,
     },
   );
 }
