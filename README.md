@@ -61,25 +61,26 @@ In your iOS app target:
 
 ## Invite link previews (`/e/[token]`)
 
-Invite pages now render dynamic metadata and a dynamic OG image for iMessage/social scrapers using:
+Invite pages now render dynamic metadata while using the static OG image for iMessage/social scrapers:
 
 - `public.get_event_share_preview(p_share_token text)` (anon-safe RPC)
 - `/e/[token]` metadata (`generateMetadata`)
-- `/e/[token]/og` image endpoint (`next/og`)
+- `/e/[token]/og` redirect endpoint to `/og.png`
 
 ### Verify preview behavior
 
 Replace `<token>` with a real invite share token:
 
 ```bash
-curl -s https://rallyapp.app/e/<token> | rg -n "og:|twitter:|Invite unavailable"
+curl -s https://rallyapp.app/e/<token> | rg -n "og:|twitter:"
 curl -i https://rallyapp.app/e/<token>/og
 ```
 
 Check:
 
-- Valid token: metadata includes event name + date + venue, and image points to `/e/<token>/og`.
-- Invalid/expired/deleted token: fallback `Invite unavailable` metadata and fallback OG image content.
+- Valid token: title is `Rally Invite Link For {eventName}` and description includes date + optional venue.
+- Invite preview image is always `/og.png`.
+- Invalid/expired/deleted token: generic Rally fallback metadata and `/og.png`.
 - Response headers include crawler caching:
   - `Cache-Control: public, s-maxage=300, stale-while-revalidate=86400`
 - Invite page is not indexable:

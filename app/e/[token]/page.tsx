@@ -8,7 +8,7 @@ import {
   getInviteFallbackMetadata,
   resolveTimeZoneFromHeaders,
 } from "@/lib/invite-share-preview";
-import { SITE_TITLE } from "@/lib/site-metadata";
+import { DEFAULT_OG_IMAGE_PATH, SITE_TITLE } from "@/lib/site-metadata";
 
 type InvitePageProps = {
   params: Promise<{
@@ -29,10 +29,6 @@ function getInvitePath(token: string): string {
   return `/e/${encodeURIComponent(token)}`;
 }
 
-function getInviteOgPath(token: string): string {
-  return `/e/${encodeURIComponent(token)}/og`;
-}
-
 export async function generateMetadata({
   params,
 }: InvitePageProps): Promise<Metadata> {
@@ -42,7 +38,6 @@ export async function generateMetadata({
   const preview = await fetchEventSharePreview(token, { timeZone });
 
   const invitePath = getInvitePath(token);
-  const inviteOgPath = getInviteOgPath(token);
 
   if (preview.state === "unavailable") {
     const fallback = getInviteFallbackMetadata();
@@ -78,31 +73,32 @@ export async function generateMetadata({
   const description = preview.venueName
     ? `${preview.formattedDate} | ${preview.venueName}`
     : preview.formattedDate;
+  const inviteTitle = `Rally Invite Link For ${preview.eventName}`;
 
   return {
-    title: preview.eventName,
+    title: inviteTitle,
     description,
     robots: INVITE_ROBOTS,
     openGraph: {
-      title: preview.eventName,
+      title: inviteTitle,
       description,
       url: invitePath,
       siteName: "Rally",
       type: "website",
       images: [
         {
-          url: inviteOgPath,
+          url: DEFAULT_OG_IMAGE_PATH,
           width: 1200,
           height: 630,
-          alt: `${preview.eventName} invite`,
+          alt: SITE_TITLE,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: preview.eventName,
+      title: inviteTitle,
       description,
-      images: [inviteOgPath],
+      images: [DEFAULT_OG_IMAGE_PATH],
     },
   };
 }
