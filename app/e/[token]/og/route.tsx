@@ -40,7 +40,8 @@ function truncateAtWordBoundary(text: string, maxChars: number): string {
 
   const truncated = normalized.slice(0, maxChars + 1);
   const lastSpaceIndex = truncated.lastIndexOf(" ");
-  const cutoffIndex = lastSpaceIndex > maxChars * 0.6 ? lastSpaceIndex : maxChars;
+  const cutoffIndex =
+    lastSpaceIndex > maxChars * 0.6 ? lastSpaceIndex : maxChars;
 
   return `${truncated.slice(0, cutoffIndex).trimEnd()}...`;
 }
@@ -57,7 +58,10 @@ function getTitleFontSize(nameLength: number): number {
   return 72;
 }
 
-function getSecondaryLine(formattedDate: string, venueName: string | null): string {
+function getSecondaryLine(
+  formattedDate: string,
+  venueName: string | null,
+): string {
   if (!venueName) {
     return normalizeText(formattedDate);
   }
@@ -119,55 +123,66 @@ function getAvailableImage({
       <div
         style={{
           display: "flex",
-          alignSelf: "flex-start",
-          padding: "11px 18px",
-          borderRadius: "999px",
-          background: PALETTE.primary,
-          color: PALETTE.primaryForeground,
-          fontSize: "18px",
-          letterSpacing: "0.1em",
-          fontWeight: 700,
-          textTransform: "uppercase",
-        }}
-      >
-        Rally Invite
-      </div>
-
-      <div
-        style={{
-          display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          flex: 1,
-          gap: "18px",
+          gap: "24px",
+          width: "100%",
         }}
       >
         <div
           style={{
-            fontSize: `${titleFontSize}px`,
-            lineHeight: 1.05,
+            display: "flex",
+            alignSelf: "flex-start",
+            padding: "11px 18px",
+            borderRadius: "999px",
+            background: PALETTE.primary,
+            color: PALETTE.primaryForeground,
+            fontSize: "24px",
+            letterSpacing: "0.1em",
             fontWeight: 700,
-            letterSpacing: "-0.02em",
-            color: PALETTE.cardForeground,
-            maxWidth: "1040px",
-            maxHeight: "236px",
-            overflow: "hidden",
+            textTransform: "uppercase",
           }}
         >
-          {title}
+          Rally Event Invite
         </div>
 
         <div
           style={{
             display: "flex",
-            fontSize: "34px",
-            lineHeight: 1.2,
-            color: PALETTE.primary,
-            maxWidth: "980px",
-            overflow: "hidden",
+            flexDirection: "column",
+            justifyContent: "center",
+            flex: 1,
+            gap: "18px",
           }}
         >
-          {secondaryLine}
+          <div
+            style={{
+              display: "flex",
+              fontSize: `52px`,
+              lineHeight: 1.05,
+              fontWeight: 900,
+              letterSpacing: "-0.02em",
+              color: PALETTE.cardForeground,
+              maxWidth: "1040px",
+              maxHeight: "236px",
+              overflow: "hidden",
+            }}
+          >
+            {title}
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              fontSize: "48px",
+              lineHeight: 1.2,
+              color: PALETTE.primary,
+              maxWidth: "980px",
+              overflow: "hidden",
+              fontWeight: 800,
+            }}
+          >
+            {secondaryLine}
+          </div>
         </div>
       </div>
     </>,
@@ -175,7 +190,10 @@ function getAvailableImage({
 }
 
 function redirectToDefaultOgImage(request: NextRequest): Response {
-  const fallbackImageUrl = new URL(DEFAULT_OG_IMAGE_PATH, request.url).toString();
+  const fallbackImageUrl = new URL(
+    DEFAULT_OG_IMAGE_PATH,
+    request.url,
+  ).toString();
 
   return new Response(null, {
     status: 307,
