@@ -1,4 +1,9 @@
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import {
+  DEFAULT_OG_IMAGE_PATH,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+} from "@/lib/site-metadata";
 
 const DEFAULT_TIMEZONE = "UTC";
 const TIMEZONE_HEADERS = [
@@ -41,10 +46,11 @@ type InvitePreviewUnavailable = {
 
 export type InviteSharePreview = InvitePreviewAvailable | InvitePreviewUnavailable;
 
-export function getInviteUnavailableMetadata() {
+export function getInviteFallbackMetadata() {
   return {
-    title: "Invite unavailable - Rally",
-    description: "This invite link is unavailable, expired, or has been removed.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    imagePath: DEFAULT_OG_IMAGE_PATH,
   };
 }
 

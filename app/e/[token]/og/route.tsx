@@ -5,6 +5,7 @@ import {
   fetchEventSharePreview,
   resolveTimeZoneFromHeaders,
 } from "@/lib/invite-share-preview";
+import { DEFAULT_OG_IMAGE_PATH } from "@/lib/site-metadata";
 
 export const runtime = "edge";
 
@@ -155,73 +156,16 @@ function getAvailableImage({
   );
 }
 
-function getUnavailableImage() {
-  return getShell(
-    <>
-      <div
-        style={{
-          display: "flex",
-          alignSelf: "flex-start",
-          padding: "10px 18px",
-          borderRadius: "999px",
-          border: "1px solid rgba(253, 186, 116, 0.38)",
-          fontSize: "20px",
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          color: "#fed7aa",
-        }}
-      >
-        Rally Invite
-      </div>
+function redirectToDefaultOgImage(request: NextRequest): Response {
+  const fallbackImageUrl = new URL(DEFAULT_OG_IMAGE_PATH, request.url).toString();
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-        <div
-          style={{
-            display: "flex",
-            fontSize: "78px",
-            lineHeight: 1.08,
-            fontWeight: 700,
-            color: "#fff7ed",
-          }}
-        >
-          Invite unavailable
-        </div>
-        <div
-          style={{
-            display: "flex",
-            fontSize: "34px",
-            color: "#fde68a",
-            lineHeight: 1.25,
-            maxWidth: "900px",
-          }}
-        >
-          This invite link may be expired, deleted, or no longer valid.
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", fontSize: "26px", color: "#e2e8f0" }}>
-          Create and share events with Rally
-        </div>
-        <div
-          style={{
-            display: "flex",
-            fontSize: "34px",
-            fontWeight: 700,
-            color: "#f8fafc",
-          }}
-        >
-          Rally
-        </div>
-      </div>
-    </>,
-  );
+  return new Response(null, {
+    status: 307,
+    headers: {
+      ...OG_IMAGE_HEADERS,
+      Location: fallbackImageUrl,
+    },
+  });
 }
 
 export async function GET(
@@ -232,14 +176,16 @@ export async function GET(
   const timeZone = resolveTimeZoneFromHeaders(request.headers);
   const preview = await fetchEventSharePreview(token, { timeZone });
 
+  if (preview.state === "unavailable") {
+    return redirectToDefaultOgImage(request);
+  }
+
   return new ImageResponse(
-    preview.state === "available"
-      ? getAvailableImage({
-          eventName: preview.eventName,
-          formattedDate: preview.formattedDate,
-          venueName: preview.venueName,
-        })
-      : getUnavailableImage(),
+    getAvailableImage({
+      eventName: preview.eventName,
+      formattedDate: preview.formattedDate,
+      venueName: preview.venueName,
+    }),
     {
       width: 1200,
       height: 630,

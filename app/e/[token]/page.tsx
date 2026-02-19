@@ -5,9 +5,10 @@ import InviteRedirect from "./invite-redirect";
 import { APP_STORE_URL } from "@/lib/app-store";
 import {
   fetchEventSharePreview,
-  getInviteUnavailableMetadata,
+  getInviteFallbackMetadata,
   resolveTimeZoneFromHeaders,
 } from "@/lib/invite-share-preview";
+import { SITE_TITLE } from "@/lib/site-metadata";
 
 type InvitePageProps = {
   params: Promise<{
@@ -44,7 +45,7 @@ export async function generateMetadata({
   const inviteOgPath = getInviteOgPath(token);
 
   if (preview.state === "unavailable") {
-    const fallback = getInviteUnavailableMetadata();
+    const fallback = getInviteFallbackMetadata();
 
     return {
       title: fallback.title,
@@ -58,10 +59,10 @@ export async function generateMetadata({
         type: "website",
         images: [
           {
-            url: inviteOgPath,
+            url: fallback.imagePath,
             width: 1200,
             height: 630,
-            alt: "Rally invite unavailable",
+            alt: SITE_TITLE,
           },
         ],
       },
@@ -69,7 +70,7 @@ export async function generateMetadata({
         card: "summary_large_image",
         title: fallback.title,
         description: fallback.description,
-        images: [inviteOgPath],
+        images: [fallback.imagePath],
       },
     };
   }
