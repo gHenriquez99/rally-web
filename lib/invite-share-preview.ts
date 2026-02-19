@@ -31,7 +31,7 @@ type InvitePreviewAvailable = {
   eventName: string;
   eventDateIso: string;
   formattedDate: string;
-  venueName: string;
+  venueName: string | null;
 };
 
 type InvitePreviewUnavailable = {
@@ -173,7 +173,7 @@ export async function fetchEventSharePreview(
     }
   }
 
-  if (!row.event_name || !row.event_date || !row.venue_name) {
+  if (!row.event_name || !row.event_date) {
     return { state: "unavailable", reason: "invalid" };
   }
 

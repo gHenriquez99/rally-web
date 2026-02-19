@@ -59,7 +59,7 @@ function getAvailableImage({
 }: {
   eventName: string;
   formattedDate: string;
-  venueName: string;
+  venueName: string | null;
 }) {
   return getShell(
     <>
@@ -93,20 +93,34 @@ function getAvailableImage({
           {eventName}
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "18px",
-            fontSize: "32px",
-            lineHeight: 1.25,
-            color: "#dbeafe",
-            flexWrap: "wrap",
-          }}
-        >
-          <span>{formattedDate}</span>
-          <span style={{ color: "#7dd3fc" }}>|</span>
-          <span>{venueName}</span>
-        </div>
+        {venueName ? (
+          <div
+            style={{
+              display: "flex",
+              gap: "18px",
+              fontSize: "32px",
+              lineHeight: 1.25,
+              color: "#dbeafe",
+              flexWrap: "wrap",
+            }}
+          >
+            <span>{formattedDate}</span>
+            <span style={{ color: "#7dd3fc" }}>|</span>
+            <span>{venueName}</span>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              fontSize: "32px",
+              lineHeight: 1.25,
+              color: "#dbeafe",
+              flexWrap: "wrap",
+            }}
+          >
+            <span>{formattedDate}</span>
+          </div>
+        )}
       </div>
 
       <div

@@ -74,7 +74,9 @@ export async function generateMetadata({
     };
   }
 
-  const description = `${preview.formattedDate} | ${preview.venueName}`;
+  const description = preview.venueName
+    ? `${preview.formattedDate} | ${preview.venueName}`
+    : preview.formattedDate;
 
   return {
     title: preview.eventName,
