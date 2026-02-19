@@ -2,8 +2,7 @@
 
 import { useEffect } from "react";
 
-const APP_STORE_ID = "6759177501";
-const APP_STORE_URL = `https://apps.apple.com/app/rally/id${APP_STORE_ID}`;
+import { APP_STORE_URL } from "@/lib/app-store";
 
 export default function CatchAll() {
   useEffect(() => {
